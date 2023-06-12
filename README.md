@@ -37,21 +37,7 @@ Or follow the [official instruction](https://github.com/bootphon/phonemizer#depe
 
 **<sup>*</sup>** Here we compute how much the model run faster than real-time as the inverse of Real Time Factor (RTF). The complete table of all models speedup is detailed on the paper.
 
-**And running Nix-TTS is as easy as:**
-```py
-from nix.models.TTS import NixTTSInference
-from IPython.display import Audio
-
-# Initiate Nix-TTS
-nix = NixTTSInference(model_dir = "<path_to_the_downloaded_model>")
-# Tokenize input text
-c, c_length, phoneme = nix.tokenize("Born to multiply, born to gaze into night skies.")
-# Convert text to raw speech
-xw = nix.vocalize(c, c_length)
-
-# Listen to the generated speech
-Audio(xw[0,0], rate = 22050)
-```
+**And running Nix-TTS is as easy as:** [example.py](example.py)
 
 ## **Acknowledgement**
 - This research is fully and exclusively funded by [Kata.ai](https://kata.ai), where the authors work as part of the [Kata.ai Research Team](https://kata.ai/research).
