@@ -3,14 +3,13 @@ import re
 
 # Phonemizer
 from phonemizer.backend import EspeakBackend
+
 phonemizer_backend = EspeakBackend(
-    language = 'en-us',
-    preserve_punctuation = True,
-    with_stress = True
+    language="en-us", preserve_punctuation=True, with_stress=True
 )
 
-class NixTokenizerEN:
 
+class NixTokenizerEN:
     def __init__(
         self,
         tokenizer_state,
@@ -28,35 +27,34 @@ class NixTokenizerEN:
         texts,
     ):
         # 1. Phonemize input texts
-        phonemes = [ self._collapse_whitespace(
-            phonemizer_backend.phonemize(
-                self._expand_abbreviations(text.lower()),
-                strip = True,
+        phonemes = [text.lower() for text in texts]
+        phonemes = [
+            self._collapse_whitespace(text)
+            for text in phonemizer_backend.phonemize(
+                phonemes,
+                strip=True,
             )
-        ) for text in texts ]
+        ]
 
         # 2. Tokenize phonemes
-        tokens = [ self._intersperse([self.vocab_dict[p] for p in phoneme], 0) for phoneme in phonemes ]
+        tokens = [
+            self._intersperse([self.vocab_dict[p] for p in phoneme], 0)
+            for phoneme in phonemes
+        ]
 
         # 3. Pad tokens
         tokens, tokens_lengths = self._pad_tokens(tokens)
 
         return tokens, tokens_lengths, phonemes
 
-    def _expand_abbreviations(
-        self,
-        text
-    ):
+    def _expand_abbreviations(self, text):
         for regex, replacement in self.abbreviations_regex:
             text = re.sub(regex, replacement, text)
 
         return text
 
-    def _collapse_whitespace(
-        self,
-        text
-    ):
-        return re.sub(self.whitespace_regex, ' ', text)
+    def _collapse_whitespace(self, text):
+        return re.sub(self.whitespace_regex, " ", text)
 
     def _intersperse(
         self,
